@@ -24,8 +24,12 @@ class WebSecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers(HttpMethod.POST, Constans.LOGIN_URL).permitAll()
-                        // AQUÍ ESTÁ LA MAGIA: Solo ADMIN puede hacer DELETE
+                        // Solo ADMIN puede borrar
                         .requestMatchers(HttpMethod.DELETE, "/contactos/**").hasAuthority("ROLE_" + Rol.ADMIN)
+                        // ADMIN y USER pueden crear (POST) y actualizar (PUT)
+                        .requestMatchers(HttpMethod.POST, "/contactos/**").hasAnyAuthority("ROLE_" + Rol.ADMIN, "ROLE_" + Rol.USER)
+                        .requestMatchers(HttpMethod.PUT, "/contactos/**").hasAnyAuthority("ROLE_" + Rol.ADMIN, "ROLE_" + Rol.USER)
+                        // Cualquier otra petición (como el GET) solo requiere estar autenticado (sirve para ADMIN, USER y READER)
                         .anyRequest().authenticated())
                 .addFilterAfter(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
 

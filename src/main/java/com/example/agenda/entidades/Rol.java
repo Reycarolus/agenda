@@ -2,7 +2,8 @@ package com.example.agenda.entidades;
 
 public enum Rol {
     ADMIN("ADMIN"),
-    USER("USER");
+    USER("USER"),
+    READER ("READER"); //Añadimos un nuevo rol
 
     private final String rol;
 
